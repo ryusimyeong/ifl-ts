@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { waitForInput } from "./input";
 import { Action, ActionDeleteTodo, ActionNewTodo, AppState, Priority, PRIORITY_NAME_MAP } from "./type";
 import { getIsValidEnumValue } from "./util";
@@ -7,7 +8,7 @@ export abstract class Command {
   constructor(public key: string, private desc: string) { }
   // 해당 커맨드가 하는 기능 설명
   toString() {
-    return `${this.key}: ${this.desc}`;
+    return chalk`{blue.bold ${this.key}}: ${this.desc}`;
   }
   // key를 눌렀을 때 실행할 함수를 정의하기 위한 추상 메소드
   abstract run(state: AppState): Promise<void | Action>;
@@ -15,7 +16,7 @@ export abstract class Command {
 
 export class CommandPrintTodos extends Command {
   constructor() {
-    super('p', '모든 할 일 출력하기');
+    super('p', chalk`모든 할 일 {red.bold 출력}하기`);
   }
 
   async run(state: AppState): Promise<void> {
@@ -32,7 +33,7 @@ export class CommandPrintTodos extends Command {
 
 export class CommandNewTodo extends Command {
   constructor() {
-    super('n', '할 일 추가하기');
+    super('n', chalk`할 일 {red.bold 추가}하기`);
   }
 
   async run(): Promise<void | ActionNewTodo> {
@@ -61,7 +62,7 @@ export class CommandNewTodo extends Command {
 
 export class CommandDeleteTodo extends Command {
   constructor() {
-    super('d', '할 일 제거하기');
+    super('d', chalk`할 일 {red.bold 제거}하기`);
   }
 
   async run(state: AppState): Promise<void | ActionDeleteTodo> {
