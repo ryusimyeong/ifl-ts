@@ -1,10 +1,12 @@
-import { Command, CommandNewTodo, CommandPrintTodos } from "./Command";
+import { Command, CommandDeleteTodo, CommandNewTodo, CommandPrintTodos } from "./Command";
 import { waitForInput } from "./input";
 import Todo from "./Todo";
 import { Action, AppState, Priority } from "./type";
 
 const commands: Command[] = [
-  new CommandPrintTodos(), new CommandNewTodo()
+  new CommandPrintTodos(),
+  new CommandNewTodo(),
+  new CommandDeleteTodo()
 ];
 
 async function main() {
@@ -43,13 +45,21 @@ async function main() {
 main();
 
 function getNextState(state: AppState, action: Action): AppState {
+  // 해당 스위치 문에서는 식별가능유니온타입에 의해 타입가드가 작동하고 있다.
   switch (action.type) {
+    // action -> ActionNewTodo
     case 'newTodo':
       return {
         ...state,
         todos: [
           ...state.todos, new Todo(action.title, action.priority)
         ]
+      }
+    // action -> ActionDeleteTodo
+    case 'deleteTodo':
+      return {
+        ...state,
+        todos: state.todos.filter(todo => todo.id !== action.id)
       }
   }
 }
